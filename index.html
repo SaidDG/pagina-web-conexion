@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página de veterinaria - Diseño Web</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f1f1f1;
+            display: grid;
+            grid-template-areas:
+                "header header"
+                "nav main"
+                "footer footer";
+            grid-template-columns: 240px 1fr;
+            min-height: 100vh;
+        }
+
+header {
+    grid-area: header;
+    background-color: #2c3e50;
+    padding: 15px 30px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 20px;
+}
+
+header img {
+    width: 110px;
+    height: auto;
+    border-radius: 50%;
+}
+
+        header h1 {
+            margin: 0;
+        }
+
+        nav {
+            grid-area: nav;
+            background-color: #34495e;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        nav a {
+            display: block;
+            color: white;
+            text-align: left;
+            padding: 14px 20px;
+            text-decoration: none;
+            transition: 0.3s;
+            border-bottom: 1px solid #2c3e50;
+        }
+
+        nav a:hover {
+            background-color: #DDD0CB;
+            color: black;
+        }
+
+        main {
+            grid-area: main;
+            padding: 30px; /* Medida unificada con los otros archivos */
+            background-color: white;
+            margin: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
+	    main {
+    grid-area: main;
+    padding: 30px;
+    background-color: white;
+    margin: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    min-height: 510px;
+}
+        }
+
+        h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #DDD0CB;
+            padding-bottom: 10px;
+            margin-top: 0; /* Medida unificada con los otros archivos */
+        }
+
+        footer {
+            grid-area: footer;
+            background-color: #2c3e50;
+            padding: 20px;
+            text-align: center;
+            color: #bdc3c7;
+        }
+
+        .highlight {
+            color: #DDD0CB;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                display: flex;
+                flex-direction: column;
+            }
+            header {
+                flex-direction: column;
+                text-align: center;
+            }
+            nav {
+                flex-direction: column;
+            }
+            nav a {
+                text-align: center;
+                border-bottom: none;
+            }
+            main {
+                margin: 10px;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="logoveterinaria.png" alt="Logo">
+        <h1>Veterinaria Felicilandia</h1>
+    </header>
+
+    <nav>
+        <a href="index.html">Inicio</a>
+        <a href="propietarios.html">Propietarios</a>
+        <a href="pacientes.html">Pacientes</a>
+        <a href="consultas.html">Citas/consultas</a>
+        <a href="vacunaciones.html">Vacunaciones</a>
+    </nav>
+
+    <main>
+        <h2>Sobre Nuestro Consultorio Médico</h2>
+        <p>En nuestra veterinaria, nos dedicamos al bienestar de tus mascotas, ofreciendo servicios médicos de alta calidad, con citas para diversos servicios como desparasitación, chequeos preventivos y diagnósticos avanzados. Garantizamos que tus compañeros de vida reciban un trato digno, humano y efectivo en cada visita.</p>
+        <p>Nuestra prioridad es fortalecer el vínculo entre tú y tu mascota, brindándote la confianza y la tranquilidad de saber que sus mejores amigos están en las manos más expertas y cariñosas.</p>
+    </main>
+
+<footer>
+    <p><strong>Alumno:</strong> <span class="highlight">Said Duarte Granados</span> | <strong>Control:</strong> 0833 | <strong>Semestre:</strong> 4to J</p>
+</footer>
+
+</body>
+</html>

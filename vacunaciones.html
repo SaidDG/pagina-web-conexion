@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Colección Vacunaciones - Veterinaria Felicilandia</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 0; padding: 0; background-color: #f1f1f1;
+            display: grid;
+            grid-template-areas: "header header" "nav main" "footer footer";
+            grid-template-columns: 240px 1fr; min-height: 100vh;
+        }
+        header { 
+            grid-area: header; background-color: #2c3e50; padding: 15px 30px; color: white; 
+            display: flex; align-items: center; justify-content: flex-start; gap: 20px; 
+        }
+        header img { width: 110px; height: auto; border-radius: 50%; }
+        header h1 { margin: 0; }
+        nav { grid-area: nav; background-color: #34495e; display: flex; flex-direction: column; }
+        nav a { display: block; color: white; padding: 14px 20px; text-decoration: none; border-bottom: 1px solid #2c3e50; }
+        nav a:hover { background-color: #DDD0CB; color: black; }
+        main { grid-area: main; padding: 30px; background-color: white; margin: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        h2 { color: #2c3e50; border-bottom: 2px solid #DDD0CB; padding-bottom: 10px; margin-top: 0; }
+        
+        .registro-contenedor-columnas { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .columna-izquierda, .columna-derecha { background-color: #fdfdfd; border: 1px solid #e0e0e0; border-radius: 6px; padding: 20px; }
+        h3 { color: #34495e; border-bottom: 2px solid #34495e; padding-bottom: 5px; margin-top: 0; }
+        
+        .form-row { display: flex; gap: 15px; margin-bottom: 12px; }
+        .form-group { flex: 1; display: flex; flex-direction: column; }
+        .form-group label { font-weight: bold; margin-bottom: 4px; font-size: 13px; color: #2c3e50; }
+        .form-group input { padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        
+        .btn-submit { background-color: #DDD0CB; color: black; padding: 12px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 15px; }
+        .btn-submit:hover { background-color: #2c3e50; color: white; }
+        
+        .vacuna-card { background-color: white; padding: 20px; border-radius: 8px; margin-bottom: 16px; border-left: 5px solid #DDD0CB; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .vacuna-card h4 { margin: 0 0 10px 0; color: #34495e; border-bottom: 1px dashed #ddd; padding-bottom: 5px; display: flex; justify-content: space-between; }
+        .label { font-weight: bold; }
+        .badge-aplicado { background-color: #3498db; color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px; }
+        .mensaje-vacio { color: #7f8c8d; font-style: italic; text-align: center; padding: 20px; }
+        footer { grid-area: footer; background-color: #2c3e50; padding: 20px; text-align: center; color: #bdc3c7; }
+        .highlight { color: #DDD0CB; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="logoveterinaria.png" alt="Logo">
+        <h1>Veterinaria Felicilandia</h1>
+    </header>
+    <nav>
+        <a href="index.html">Inicio</a>
+        <a href="propietarios.html">Propietarios</a>
+        <a href="pacientes.html">Pacientes</a>
+        <a href="consultas.html">Citas/Consultas</a>
+        <a href="vacunaciones.html">Vacunaciones</a>
+    </nav>
+    <main>
+        <h2>Control de Vacunación y Desparasitación</h2>
+        <div class="registro-contenedor-columnas">
+            <div class="columna-izquierda">
+                <h3>Registrar Aplicación de Dosis</h3>
+                <form id="formVacuna">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Nombre de Mascota:</label>
+                            <input type="text" id="mascota_vacuna" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Producto / Tratamiento:</label>
+                            <input type="text" id="producto_vacuna" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Fecha de Aplicación:</label>
+                            <input type="text" id="fecha_apli" placeholder="Ej. 05/02/2026" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Próxima Cita Obligatoria:</label>
+                            <input type="text" id="fecha_prox" placeholder="Ej. 05/05/2026" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-submit">Registrar Tratamiento</button>
+                </form>
+            </div>
+            <div class="columna-derecha">
+                <h3>Tratamientos Inmunológicos Preventivos</h3>
+                <div id="contenedorVacunas">
+                    <p class="mensaje-vacio" id="mensajeVacio">No se han registrado vacunas.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p><strong>Alumno:</strong> <span class="highlight">Said Duarte Granados</span> | <strong>Control:</strong> 0833 | <strong>Semestre:</strong> 4to J</p>
+    </footer>
+
+   <script>
+
+    let editandoId = null;
+
+    async function cargarVacunas(){
+
+        const respuesta = await fetch("http://localhost:3000/vacunaciones");
+        const vacunas = await respuesta.json();
+
+        const lista = document.getElementById("contenedorVacunas");
+
+        lista.innerHTML = "";
+
+        if(vacunas.length === 0){
+            lista.innerHTML = '<p class="mensaje-vacio">No se han registrado vacunas.</p>';
+            return;
+        }
+
+        vacunas.reverse().forEach(vacuna => {
+
+            lista.innerHTML += `
+            <div class="vacuna-card">
+
+                <h4>
+                    Mascota: ${vacuna.mascota_vacuna}
+                    <span class="badge-aplicado">Aplicado</span>
+                </h4>
+
+                <p><span class="label">Producto:</span> ${vacuna.producto_vacuna}</p>
+
+                <p>
+                    <span class="label">Aplicada:</span>
+                    ${vacuna.fecha_apli}
+                    |
+                    <span class="label">Próxima:</span>
+                    ${vacuna.fecha_prox}
+                </p>
+
+                <button onclick="editarVacuna('${vacuna._id}')">
+                    Editar
+                </button>
+
+                <button onclick="eliminarVacuna('${vacuna._id}')">
+                    Eliminar
+                </button>
+
+            </div>
+            `;
+        });
+    }
+
+    async function eliminarVacuna(id){
+
+        if(!confirm("¿Eliminar vacuna?")) return;
+
+        await fetch(`http://localhost:3000/vacunaciones/${id}`,{
+            method:"DELETE"
+        });
+
+        cargarVacunas();
+    }
+
+    async function editarVacuna(id){
+
+        const respuesta = await fetch("http://localhost:3000/vacunaciones");
+        const vacunas = await respuesta.json();
+
+        const vacuna = vacunas.find(v => v._id === id);
+
+        document.getElementById("mascota_vacuna").value = vacuna.mascota_vacuna;
+        document.getElementById("producto_vacuna").value = vacuna.producto_vacuna;
+        document.getElementById("fecha_apli").value = vacuna.fecha_apli;
+        document.getElementById("fecha_prox").value = vacuna.fecha_prox;
+
+        editandoId = id;
+    }
+
+    document.getElementById("formVacuna").addEventListener("submit", async function(e){
+
+        e.preventDefault();
+
+        const vacuna = {
+            mascota_vacuna: document.getElementById("mascota_vacuna").value,
+            producto_vacuna: document.getElementById("producto_vacuna").value,
+            fecha_apli: document.getElementById("fecha_apli").value,
+            fecha_prox: document.getElementById("fecha_prox").value
+        };
+
+        if(editandoId){
+
+            await fetch(`http://localhost:3000/vacunaciones/${editandoId}`,{
+                method:"PUT",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify(vacuna)
+            });
+
+            editandoId = null;
+
+        } else {
+
+            await fetch("http://localhost:3000/vacunaciones",{
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify(vacuna)
+            });
+
+        }
+
+        document.getElementById("formVacuna").reset();
+
+        cargarVacunas();
+    });
+
+    cargarVacunas();
+
+    </script>
+</body>
+</html>

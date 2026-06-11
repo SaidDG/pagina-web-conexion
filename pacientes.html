@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Colección Pacientes - Veterinaria Felicilandia</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 0; padding: 0; background-color: #f1f1f1;
+            display: grid;
+            grid-template-areas: "header header" "nav main" "footer footer";
+            grid-template-columns: 240px 1fr; min-height: 100vh;
+        }
+        header { 
+            grid-area: header; background-color: #2c3e50; padding: 15px 30px; color: white; 
+            display: flex; align-items: center; justify-content: flex-start; gap: 20px; 
+        }
+        header img { width: 110px; height: auto; border-radius: 50%; }
+        header h1 { margin: 0; }
+        nav { grid-area: nav; background-color: #34495e; display: flex; flex-direction: column; }
+        nav a { display: block; color: white; padding: 14px 20px; text-decoration: none; border-bottom: 1px solid #2c3e50; }
+        nav a:hover { background-color: #DDD0CB; color: black; }
+        main { grid-area: main; padding: 30px; background-color: white; margin: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        h2 { color: #2c3e50; border-bottom: 2px solid #DDD0CB; padding-bottom: 10px; margin-top: 0; }
+        
+        .registro-contenedor-columnas { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .columna-izquierda, .columna-derecha { background-color: #fdfdfd; border: 1px solid #e0e0e0; border-radius: 6px; padding: 20px; }
+        h3 { color: #34495e; border-bottom: 2px solid #34495e; padding-bottom: 5px; margin-top: 0; }
+        
+        .form-row { display: flex; gap: 15px; margin-bottom: 12px; }
+        .form-group { flex: 1; display: flex; flex-direction: column; }
+        .form-group label { font-weight: bold; margin-bottom: 4px; font-size: 13px; color: #2c3e50; }
+        .form-group input, .form-group select { padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        
+        .btn-submit { background-color: #DDD0CB; color: black; padding: 12px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 15px; }
+        .btn-submit:hover { background-color: #2c3e50; color: white; }
+        
+        .paciente-card { background-color: white; padding: 20px; border-radius: 8px; margin-bottom: 16px; border-left: 5px solid #DDD0CB; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .paciente-card h4 { margin: 0 0 10px 0; color: #34495e; border-bottom: 1px dashed #ddd; padding-bottom: 5px; display: flex; justify-content: space-between; }
+        .label { font-weight: bold; }
+        .badge-nuevo { background-color: #DDD0CB; color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px; }
+        .mensaje-vacio { color: #7f8c8d; font-style: italic; text-align: center; padding: 20px; }
+        footer { grid-area: footer; background-color: #2c3e50; padding: 20px; text-align: center; color: #bdc3c7; }
+        .highlight { color: #DDD0CB; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="logoveterinaria.png" alt="Logo">
+        <h1>Veterinaria Felicilandia</h1>
+    </header>
+    <nav>
+        <a href="index.html">Inicio</a>
+        <a href="propietarios.html">Propietarios</a>
+        <a href="pacientes.html">Pacientes</a>
+        <a href="consultas.html">Citas/Consultas</a>
+        <a href="vacunaciones.html">Vacunaciones</a>
+    </nav>
+    <main>
+        <h2>Expedientes de Pacientes</h2>
+        <div class="registro-contenedor-columnas">
+            <div class="columna-izquierda">
+                <h3>Alta de Nuevo Paciente</h3>
+                <form id="formPaciente">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Nombre de Mascota:</label>
+                            <input type="text" id="nombre_mascota" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Especie:</label>
+                            <select id="especie_mascota" required>
+                                <option value="" disabled selected>Seleccione...</option>
+                                <option value="Perro">Perro</option>
+                                <option value="Gato">Gato</option>
+                                <option value="Ave">Ave</option>
+                                <option value="Otro">Otro</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Raza:</label>
+                            <input type="text" id="raza_mascota" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Peso:</label>
+                            <input type="text" id="peso_mascota" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Fecha de Nacimiento:</label>
+                            <input type="text" id="fecha_nac" placeholder="Ej. 14/02/2023" required>
+                        </div>
+                        <div class="form-group">
+                            <label>DNI del Dueño:</label>
+                            <input type="text" id="dni_dueño" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-submit">Dar de Alta Paciente</button>
+                </form>
+            </div>
+            <div class="columna-derecha">
+                <h3>Mascotas en Sistema Clínico</h3>
+                <div id="contenedorPacientes">
+                    <p class="mensaje-vacio" id="mensajeVacio">No se han ingresado pacientes.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p><strong>Alumno:</strong> <span class="highlight">Said Duarte Granados</span> | <strong>Control:</strong> 0833 | <strong>Semestre:</strong> 4to J</p>
+    </footer>
+
+   <script>
+
+    let pacienteEditando = null;
+
+async function cargarPacientes() {
+
+    const respuesta = await fetch("http://localhost:3000/pacientes");
+
+    const pacientes = await respuesta.json();
+
+    const lista = document.getElementById("contenedorPacientes");
+
+    lista.innerHTML = "";
+
+    if (pacientes.length === 0) {
+        lista.innerHTML = '<p class="mensaje-vacio">No se han ingresado pacientes.</p>';
+        return;
+    }
+
+    pacientes.reverse().forEach(paciente => {
+
+        lista.innerHTML += `
+            <div class="paciente-card">
+                <h4>
+                    Mascota: ${paciente.nombre_mascota}
+                    <span class="badge-nuevo">Activo</span>
+                </h4>
+
+                <p>
+                    <span class="label">Especie:</span>
+                    ${paciente.especie_mascota}
+                    |
+                    <span class="label">Raza:</span>
+                    ${paciente.raza_mascota}
+                </p>
+
+                <p>
+                    <span class="label">Nacimiento:</span>
+                    ${paciente.fecha_nac}
+                    |
+                    <span class="label">Peso:</span>
+                    ${paciente.peso_mascota}
+                </p>
+
+                <p>
+                    <span class="label">DNI del Dueño:</span>
+                    ${paciente.dni_dueño}
+                </p>
+
+                <button onclick="editarPaciente('${paciente._id}')">
+                Editar
+                </button>
+
+                <button onclick="eliminarPaciente('${paciente._id}')">
+                    Eliminar
+                </button>
+            </div>
+        `;
+    });
+}
+
+async function eliminarPaciente(id) {
+
+    if (!confirm("¿Deseas eliminar este paciente?")) {
+        return;
+    }
+
+    const respuesta = await fetch(
+        `http://localhost:3000/pacientes/${id}`,
+        {
+            method: "DELETE"
+        }
+    );
+
+    if (respuesta.ok) {
+        cargarPacientes();
+    } else {
+        alert("Error al eliminar");
+    }
+}
+
+async function editarPaciente(id) {
+
+    const respuesta = await fetch("http://localhost:3000/pacientes");
+
+    const pacientes = await respuesta.json();
+
+    const paciente = pacientes.find(p => p._id === id);
+
+    if (!paciente) return;
+
+    document.getElementById('nombre_mascota').value = paciente.nombre_mascota;
+    document.getElementById('especie_mascota').value = paciente.especie_mascota;
+    document.getElementById('raza_mascota').value = paciente.raza_mascota;
+    document.getElementById('peso_mascota').value = paciente.peso_mascota;
+    document.getElementById('fecha_nac').value = paciente.fecha_nac;
+    document.getElementById('dni_dueño').value = paciente.dni_dueño;
+
+    pacienteEditando = id;
+
+    document.querySelector('.btn-submit').textContent =
+        "Actualizar Paciente";
+}
+
+document.getElementById('formPaciente').addEventListener('submit', async function(e) {
+
+    e.preventDefault();
+
+    const paciente = {
+        nombre_mascota: document.getElementById('nombre_mascota').value,
+        especie_mascota: document.getElementById('especie_mascota').value,
+        raza_mascota: document.getElementById('raza_mascota').value,
+        peso_mascota: document.getElementById('peso_mascota').value,
+        fecha_nac: document.getElementById('fecha_nac').value,
+        dni_dueño: document.getElementById('dni_dueño').value
+    };
+
+    let url = "http://localhost:3000/pacientes";
+    let metodo = "POST";
+
+    if (pacienteEditando) {
+        url = `http://localhost:3000/pacientes/${pacienteEditando}`;
+        metodo = "PUT";
+    }
+
+    const respuesta = await fetch(url, {
+        method: metodo,
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(paciente)
+    });
+
+    if (respuesta.ok) {
+        pacienteEditando = null;
+        document.querySelector('.btn-submit').textContent =
+            "Dar de Alta Paciente";
+        alert("Paciente guardado correctamente");
+        document.getElementById('formPaciente').reset();
+        cargarPacientes();
+    } else {
+        alert("Error al guardar paciente");
+    }
+});
+
+cargarPacientes();
+
+</script>
+</body>
+</html>
